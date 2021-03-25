@@ -1995,6 +1995,17 @@ class rsssl_admin extends rsssl_front_end
 		return $not_used_headers;
 	}
 
+	/**
+	 * @return bool
+	 */
+	public function recommended_security_headers_set(){
+	    if (count($this->get_recommended_security_headers()) >0 ) {
+	        return false;
+	    } else {
+	        return true;
+	    }
+	}
+
 
     /**
      * Adds redirect to https rules to the .htaccess file or htaccess.conf on Bitnami.
@@ -3086,12 +3097,19 @@ class rsssl_admin extends rsssl_front_end
             ),
 
             'recommended_security_headers_not_set' => array(
-	            'callback' => '_true_',
+	            'condition' => array(
+		            'rsssl_ssl_enabled',
+	            ),
+                'callback' => 'RSSSL()->really_simple_ssl->recommended_security_headers_set',
 	            'score' => 5,
 	            'output' => array(
-		            'true' => array(
+		            'false' => array(
 			            'msg' => sprintf(__("Recommended security headers not enabled (%sRead more%s).", "really-simple-ssl"), '<a target="_blank" href="https://really-simple-ssl.com/everything-you-need-to-know-about-security-headers/">', '</a>'),
 			            'icon' => 'premium'
+		            ),
+		            'true' => array(
+			            'msg' => sprintf(__("Recommended security headers enabled (%sRead more%s).", "really-simple-ssl"), '<a target="_blank" href="https://really-simple-ssl.com/everything-you-need-to-know-about-security-headers/">', '</a>'),
+			            'icon' => 'success'
 		            ),
 	            ),
             ),
